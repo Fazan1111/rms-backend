@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+
+
+export type Users = any;
 
 @Injectable()
 export class UserService {
@@ -10,21 +13,38 @@ export class UserService {
         @InjectRepository(User)
         private repository: Repository<User>
     ) {}
-    
+
+    private readonly users = [
+      {
+        id: 1,
+        username: 'john',
+        password: 'changeme',
+      },
+      {
+        userId: 2,
+        username: 'maria',
+        password: 'guess'
+      },
+    ];
+
     async getLists() {
         return await this.repository.find();
     }
 
     async store(data: User) {
-        let user: User = new User();
-        user.roleId = data.roleId;
-        user.userName = data.userName;
-        user.userType = data.userType;
-        user.email = data.email;
+        const user = await this.repository.findOne({ where: { userName: data.userName } });
+        if(user && data.userName == user.userName) {
+            throw new BadRequestException('user name already exist');
+        }
+        data.password = await bcrypt.hash(data.password, 10);
+        return this.repository.save(data);
+    }
 
-        const random = 20;
-        const hash = await bcrypt.hash(data.password, random);
-        user.password = hash;
-        return this.repository.save(user);
+    async findByName(user: User): Promise<Users | undefined> {
+        return await this.repository.find({where: {userName: user.userName}});
+    }
+
+    async findOne(username: string): Promise<Users | undefined> {
+      return this.users.find(user => user.username === username);
     }
 }

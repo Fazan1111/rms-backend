@@ -10,6 +10,8 @@ import { PurchaseModule } from './purchase/purchase.module';
 import { SellModule } from './sell/sell.module';
 import { CategoryModule } from './category/category.module';
 import { BillingModule } from './billing/billing.module';
+import { EmployeeModule } from './employee/employee.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { BillingModule } from './billing/billing.module';
     SellModule,
     CategoryModule,
     BillingModule,
+    EmployeeModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

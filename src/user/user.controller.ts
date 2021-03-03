@@ -18,9 +18,16 @@ export class UserController {
 
     }
 
+    @Post('/findName')
+    async findByName(
+      @Body() user: User
+    ) {
+        return await this.service.findByName(user);
+    }
+
     @Post('/store')
     async store(@Body() user: User) {
-        return await this.service.store(user); 
-        
+        return await this.service.store(user);
+
     }
 }
