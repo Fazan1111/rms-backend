@@ -1,18 +1,16 @@
-import { Product } from "src/product/product.entity";
-import { 
+import 
+{
     Column, 
     CreateDateColumn, 
     Entity, 
-    OneToMany, 
     PrimaryGeneratedColumn, 
-    UpdateDateColumn 
+    UpdateDateColumn  
 } from "typeorm";
 
-
 @Entity()
-export class Category {
+export class Space {
     @PrimaryGeneratedColumn()
-    id: number
+    id:number
 
     @Column()
     name: string
@@ -20,12 +18,9 @@ export class Category {
     @Column()
     code: string
 
-    @Column()
-    note: string
-
     @CreateDateColumn()
-    createdAt: Date
-
+    createAt: Date
+    
     @UpdateDateColumn()
     updatedAt: Date
 }
