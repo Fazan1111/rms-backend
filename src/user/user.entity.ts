@@ -2,11 +2,18 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 
 @Entity()
 export class User {
+
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
     roleId: number
+
+    @Column({nullable: true})
+    firstName: string
+
+    @Column({nullable: true})
+    lastName: string
 
     @Column()
     userName: string
@@ -20,7 +27,7 @@ export class User {
     @Column()
     password: string
 
-    @Column()
+    @Column({nullable: true})
     apiToken: string
 
     @CreateDateColumn()
