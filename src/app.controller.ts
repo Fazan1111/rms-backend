@@ -15,9 +15,13 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseGuards(LocalAuthGuard)
+  //@UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
-    return this.authService.login(req.user);
+    const user = {
+      userName: req.body.userName,
+      password: req.body.password
+    }
+    return this.authService.login(user);
   }
 }

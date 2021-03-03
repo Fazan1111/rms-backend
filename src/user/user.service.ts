@@ -40,8 +40,8 @@ export class UserService {
         return this.repository.save(data);
     }
 
-    async findByName(user: User): Promise<Users | undefined> {
-        return await this.repository.find({where: {userName: user.userName}});
+    async findByName(userName: string, password: string): Promise<Users | undefined> {
+        return await this.repository.findOne({where: {userName: userName}});
     }
 
     async findOne(username: string): Promise<Users | undefined> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -19,10 +19,8 @@ export class UserController {
     }
 
     @Post('/findName')
-    async findByName(
-      @Body() user: User
-    ) {
-        return await this.service.findByName(user);
+    async findByName(@Req() req) {
+        return await this.service.findByName(req.body.userName, req.body.password);
     }
 
     @Post('/store')
