@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Customer } from './customer.entity';
 import { CustomerService } from './customer.service';
 
@@ -6,26 +7,31 @@ import { CustomerService } from './customer.service';
 export class CustomerController {
     constructor(private service: CustomerService){}
 
+    @UseGuards(JwtAuthGuard)
     @Get('/lists')
     async lists() {
         return await this.service.lists();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get('/detail/:id')
     async detail(@Param('id') id: number) {
         return await this.service.getOne(id);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('/store')
     async store(@Body() customer: Customer) {
         return await this.service.store(customer);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
     async update(@Param('id') id: number, @Body() customer: Customer) {
         return await this.service.update(id, customer);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete('delete/:id')
     async destroy(@Param('id') id: number) {
         return await this.service.delete(id);

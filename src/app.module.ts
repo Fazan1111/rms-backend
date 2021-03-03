@@ -6,7 +6,6 @@ import { UserModule } from './user/user.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { CustomerModule } from './customer/customer.module';
 import { ProductModule } from './product/product.module';
-import { PurchaseModule } from './purchase/purchase.module';
 import { SellModule } from './sell/sell.module';
 import { CategoryModule } from './category/category.module';
 import { BillingModule } from './billing/billing.module';
@@ -20,7 +19,6 @@ import { AuthModule } from './auth/auth.module';
     SupplierModule,
     CustomerModule,
     ProductModule,
-    PurchaseModule,
     SellModule,
     CategoryModule,
     BillingModule,
