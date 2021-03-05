@@ -32,8 +32,8 @@ export class CustomerController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('delete/:id')
-    async destroy(@Param('id') id: number) {
-        return await this.service.delete(id);
+    @Delete('/delete/:ids')
+    async destroy(@Param('ids') ids:any) {
+        return await this.service.delete(ids);
     }
 }
