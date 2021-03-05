@@ -42,12 +42,12 @@ export class CustomerService {
         .execute();
     }
 
-    async delete(id: number) {
+    async delete(ids:any) {
         await getConnection()
             .createQueryBuilder()
             .delete()
             .from(Customer)
-            .where("id = :id", { id: id })
+            .where("id IN(:id)", { id: ids })
             .execute();
     }
 }
