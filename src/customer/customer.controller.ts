@@ -10,19 +10,19 @@ export class CustomerController {
     @UseGuards(JwtAuthGuard)
     @Get('/lists')
     async lists() {
-        return await this.service.lists();
+        return await this.service.findMany();
     }
 
     @UseGuards(JwtAuthGuard)
     @Get('/detail/:id')
     async detail(@Param('id') id: number) {
-        return await this.service.getOne(id);
+        return await this.service.findOne(id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
     async store(@Body() customer: Customer) {
-        return await this.service.store(customer);
+        return await this.service.insert(customer);
     }
 
     @UseGuards(JwtAuthGuard)

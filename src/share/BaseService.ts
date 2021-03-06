@@ -40,4 +40,14 @@ export class BaseService<T> {
                     .into(this.repository).values(data).execute();
     }
 
+
+    async delete(ids: any) {
+      await getConnection()
+          .createQueryBuilder()
+          .delete()
+          .from(this.repository)
+          .where("id IN(:id)", { id: ids })
+          .execute();
+    }
+
 }

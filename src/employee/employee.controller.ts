@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards, Post, Body, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards, Post, Body, Put, Delete, Req } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Employee } from './employee.entity';
 import { EmployeeService } from './employee.service';
@@ -35,8 +35,9 @@ export class EmployeeController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('/delete/:ids')
-    async delete(@Param('ids') ids: any) {
-
+    @Delete('/delete')
+    async delete(@Req() req) {
+        const ids = req.body.ids;
+        return await this.service.delete(ids)
     }
 }
