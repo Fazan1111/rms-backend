@@ -3,7 +3,7 @@ import { ProductService } from './product.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Product } from './product.entity';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
     constructor(
         private service: ProductService
@@ -12,7 +12,21 @@ export class ProductController {
     @UseGuards(JwtAuthGuard)
     @Get('/lists')
     async list() {
-        return await this.service.findMany();
+        let entities: string[] = [
+            "category"
+        ]
+
+
+        return await this.service.findMany(
+            [
+                {
+                    entityName: entities[0],
+                    relation: "category",
+                    relationType: "INNER"
+                }
+            ], 
+            null
+        );
     }
 
     @UseGuards(JwtAuthGuard)
@@ -30,7 +44,7 @@ export class ProductController {
     @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
     async update(@Param('id') id: number, @Body() data: Product) {
-
+        return await this.service.update(id, data);
     }
 
     @UseGuards(JwtAuthGuard)

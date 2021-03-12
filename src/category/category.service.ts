@@ -11,17 +11,17 @@ export class CategoryService extends BaseService<Category> {
       this.entityName =  "category";
     }
 
-    async update(id: number, data: Category) {
-        return await getConnection()
-        .createQueryBuilder()
-        .update(Category)
-        .set({
-            name: data.name,
-            code: data.code,
-            note: data.note
-        })
-        .where(`id = :id`, {id: id})
-        .execute();
-    }
+    // async update(id: number, data: Category) {
+    //     return await getConnection()
+    //     .createQueryBuilder()
+    //     .update(Category)
+    //     .set({
+    //         name: data.name,
+    //         code: data.code,
+    //         note: data.note
+    //     })
+    //     .where(`id = :id`, {id: id})
+    //     .execute();
+    // }
 
 }

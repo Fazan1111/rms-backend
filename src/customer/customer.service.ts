@@ -11,19 +11,19 @@ export class CustomerService extends BaseService<Customer> {
         this.entityName =  "customer";
     }
 
-    async update(id: number, data: Customer) {
-        return await getConnection()
-        .createQueryBuilder()
-        .update(Customer)
-        .set({
-            name: data.name,
-            contact: data.contact,
-            email: data.email,
-            address: data.address,
-            note: data.note     
-        })
-        .where(`id = :id`, {id: id})
-        .execute();
-    }
+    // async update(id: number, data: Customer) {
+    //     return await getConnection()
+    //     .createQueryBuilder()
+    //     .update(Customer)
+    //     .set({
+    //         name: data.name,
+    //         contact: data.contact,
+    //         email: data.email,
+    //         address: data.address,
+    //         note: data.note     
+    //     })
+    //     .where(`id = :id`, {id: id})
+    //     .execute();
+    // }
 
 }

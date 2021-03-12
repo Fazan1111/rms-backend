@@ -13,7 +13,7 @@ export class EmployeeController {
     @UseGuards(JwtAuthGuard)
     @Get('/lists')
     async list() {
-        return await this.service.findMany();
+        return await this.service.findMany(null, null);
     }
 
     @UseGuards(JwtAuthGuard)

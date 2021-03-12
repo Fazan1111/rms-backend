@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { HttpCode } from "src/enum/httpCode";
-import { Connection, getConnection, getRepository, ObjectType } from "typeorm";
+import { Connection, getConnection, getManager, getRepository, ObjectType } from "typeorm";
+import Filter, { QueryRelation } from "./filter";
 
 
 @Injectable()
@@ -23,16 +24,30 @@ export class BaseService<T> {
         return query;
     }
 
-    async findMany() {
+    async findMany(relation: QueryRelation[], filter: Filter) {
         const query = await getRepository(this.repository)
                       .createQueryBuilder(this.entityName)
-                      .getMany();
 
-        if(!query) {
+        if (relation) {
+            const relationSize = relation.length;
+            if (relationSize > 0) {
+                for (let i = 0; i < relationSize; i++) {
+                    if (relation[i].relationType === "INNER") {
+                        query.innerJoinAndSelect(`${this.entityName}.${relation[i].relation}`, relation[i].entityName);
+                    } else {
+                        query.leftJoinAndSelect(`${this.entityName}.${relation[i].relation}`, relation[i].entityName);
+                    }
+                }
+            }
+        }
+
+        const result = query.getMany();
+
+        if(!result) {
             throw new HttpException('There are data available', HttpCode.NotFound);
         }
 
-        return query;
+        return result;
     }
 
     async insert(data: any) {
@@ -40,6 +55,12 @@ export class BaseService<T> {
                     .into(this.repository).values(data).execute();
     }
 
+    async update(id: number, data: any) {
+        await getManager().transaction(async manager => {
+            const query = await manager.update(this.entityName, {id: id}, data);
+            return query;
+        })
+    }
 
     async delete(ids: any) {
       await getConnection()

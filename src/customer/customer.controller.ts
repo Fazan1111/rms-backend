@@ -10,7 +10,7 @@ export class CustomerController {
     @UseGuards(JwtAuthGuard)
     @Get('/lists')
     async lists() {
-        return await this.service.findMany();
+        return await this.service.findMany(null, null);
     }
 
     @UseGuards(JwtAuthGuard)
