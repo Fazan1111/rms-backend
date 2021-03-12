@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Category } from './category.entity';
 
-@Controller('category')
+@Controller('/category')
 export class CategoryController {
     constructor(
         private service: CategoryService
@@ -16,6 +16,11 @@ export class CategoryController {
         return await this.service.findMany();
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Post('/store')
+    async store(@Body() data: Category) {
+        return await this.service.insert(data);
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get('/detail/:id')

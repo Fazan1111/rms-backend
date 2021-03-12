@@ -1,8 +1,9 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { HttpCode } from 'src/enum/httpCode';
 
 
 export type Users = any;
@@ -45,6 +46,34 @@ export class UserService {
     }
 
     async findOne(username: string): Promise<Users | undefined> {
-      return this.users.find(user => user.username === username);
+        return this.users.find(user => user.username === username);
+    }
+
+    async update(id: number, data: User) {
+        const user = await this.repository.findOne({where: {userName: id}});
+        if (user) {
+            const matchPassword = await bcrypt.compare(data.password, user.password);
+            if (matchPassword) {
+                const password = await bcrypt.hash(data.password, 10);
+                return await getConnection()
+                .createQueryBuilder()
+                .update(User)
+                .set({
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    userName: data.userName,
+                    userType: data.userType,
+                    email: data.email,
+                    password: password     
+                })
+                .where(`id = :id`, {id: id})
+                .execute();
+            } else {
+                throw new HttpException(`Username or password not correct`, HttpCode.NotFound);
+            }
+        } else {
+            throw new HttpException(`User no exist`, HttpCode.NotFound);
+        }
+
     }
 }
