@@ -7,7 +7,7 @@ import { Category } from './category.entity';
 export class CategoryService extends BaseService<Category> {
     constructor(){
       super();
-      this.repository = Category;
+      this.entityClass = Category;
       this.entityName =  "category";
     }
 

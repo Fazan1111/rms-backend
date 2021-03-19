@@ -7,7 +7,7 @@ import { Customer } from './customer.entity';
 export class CustomerService extends BaseService<Customer> {
     constructor(){
         super();
-        this.repository = Customer;
+        this.entityClass = Customer;
         this.entityName =  "customer";
     }
 

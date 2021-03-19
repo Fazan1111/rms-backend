@@ -6,7 +6,7 @@ import { Space } from './space.entity';
 export class SpaceService extends BaseService<Space> {
   constructor() {
       super();
-      this.repository = Space;
+      this.entityClass = Space;
       this.entityName =  "space";
   }
 }

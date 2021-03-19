@@ -9,7 +9,7 @@ export class EmployeeService extends BaseService<Employee> {
 
     constructor() {
         super();
-        this.repository = Employee;
+        this.entityClass = Employee;
         this.entityName =  "employee";
     }
 

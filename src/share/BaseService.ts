@@ -6,13 +6,13 @@ import Filter, { QueryRelation } from "./filter";
 
 @Injectable()
 export class BaseService<T> {
-    protected repository: ObjectType<T>
+    protected entityClass: ObjectType<T>
     protected entityName:string = "";
     public connection: Connection;
 
 
     async findOne(id: number) {
-        const query = await getRepository(this.repository)
+        const query = await getRepository(this.entityClass)
                       .createQueryBuilder(this.entityName)
                       .where(`${this.entityName}.id = :id`, {id: id})
                       .getOne();
@@ -25,20 +25,21 @@ export class BaseService<T> {
     }
 
     async findMany(relation: QueryRelation[], filter: Filter) {
-        const query = await getRepository(this.repository)
+        const query = await getRepository(this.entityClass)
                       .createQueryBuilder(this.entityName)
 
         if (relation) {
-            const relationSize = relation.length;
-            if (relationSize > 0) {
-                for (let i = 0; i < relationSize; i++) {
-                    if (relation[i].relationType === "INNER") {
-                        query.innerJoinAndSelect(`${this.entityName}.${relation[i].relation}`, relation[i].entityName);
-                    } else {
-                        query.leftJoinAndSelect(`${this.entityName}.${relation[i].relation}`, relation[i].entityName);
-                    }
+            relation.forEach((relationClass, i) => {
+                if (relationClass.relationType === "INNER") {
+                    query.innerJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
+                } else {
+                    query.leftJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
                 }
-            }
+            })   
+        }
+
+        if (filter && filter.categoryId) {
+            query.andWhere(`${this.entityName}.${filter.categoryId} = :categoryId`, {categoryId: filter.categoryId});
         }
 
         const result = query.getMany();
@@ -51,8 +52,9 @@ export class BaseService<T> {
     }
 
     async insert(data: any) {
-        return await getConnection().createQueryBuilder().insert()
-                    .into(this.repository).values(data).execute();
+        await getManager().transaction(async manager => {
+            return await manager.save(this.entityName, data);
+        })
     }
 
     async update(id: number, data: any) {
@@ -66,7 +68,7 @@ export class BaseService<T> {
       await getConnection()
           .createQueryBuilder()
           .delete()
-          .from(this.repository)
+          .from(this.entityClass)
           .where("id IN(:id)", { id: ids })
           .execute();
     }

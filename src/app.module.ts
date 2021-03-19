@@ -11,6 +11,7 @@ import { CategoryModule } from './category/category.module';
 import { BillingModule } from './billing/billing.module';
 import { EmployeeModule } from './employee/employee.module';
 import { AuthModule } from './auth/auth.module';
+import { PurchaseModule } from './purchase/purchase.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     BillingModule,
     EmployeeModule,
     AuthModule,
+    PurchaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Employee } from './employee.entity';
 import { EmployeeService } from './employee.service';
 
-@Controller('employee')
+@Controller('/employee')
 export class EmployeeController {
     constructor(
         private service: EmployeeService
@@ -31,7 +31,7 @@ export class EmployeeController {
     @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
     async update(@Param('id') id: number, @Body() data: Employee) {
-
+        return await this.service.update(id, data);
     }
 
     @UseGuards(JwtAuthGuard)
