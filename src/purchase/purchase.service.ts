@@ -24,8 +24,7 @@ export class PurchaseService extends BaseService<Purchase> {
             purchase.employeeId = data.employeeId;
             purchase.supplierId = data.supplierId;
             purchase.purchaseDate = data.purchaseDate;
-            purchase.invoice = data.invoice;
-            purchase.amount = data.amount;
+            purchase.amount = data["total"];
             await queryRunner.manager.save(Purchase, purchase);
 
             if (data.purchaseItems) {
@@ -35,6 +34,7 @@ export class PurchaseService extends BaseService<Purchase> {
                     purchItem.productId = item.productId;
                     purchItem.qty = item.qty;
                     purchItem.price = item.price;
+                    purchItem.amount = item.amount
 
                     const product = await queryRunner.manager.findOne(Product, { id: purchItem.productId });
                     const increasQty = product.qty + purchItem.qty;

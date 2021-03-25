@@ -34,6 +34,9 @@ export class BaseService<T> {
                     query.innerJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
                 } else {
                     query.leftJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
+                    if (relationClass.subRelation) {
+                        query.leftJoinAndSelect(`${relationClass.entityName}.${relationClass.subRelation["name"]}`, relationClass.subRelation["name"])
+                    }
                 }
             })   
         }

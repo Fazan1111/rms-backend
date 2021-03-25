@@ -27,9 +27,6 @@ export class Purchase {
     @Column()
     purchaseDate: Date;
 
-    @Column()
-    invoice: string;
-
     @Column({type: "double"})
     amount: number;
 

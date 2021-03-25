@@ -14,7 +14,8 @@ export class PurchaseController {
 
         const entities:string[] = [
             "supplier",
-            "employee"
+            "employee",
+            "purchaseItem"
         ]
         return this.service.findMany(
             [
@@ -27,6 +28,14 @@ export class PurchaseController {
                     entityName: entities[1],
                     relation: "employee",
                     relationType: "INNER"
+                },
+                {
+                    entityName: entities[2],
+                    relation: "purchaseItems",
+                    relationType: "LEFT",
+                    subRelation: {
+                        name: "product"
+                    }
                 }
             ], 
             null

@@ -28,6 +28,9 @@ export class PurchaseItem {
     @Column({type: "double"})
     price: number;
 
+    @Column({type: 'double'})
+    amount: number;
+
     @ManyToOne(() => Purchase, purchase => purchase.purchaseItems)
     purchase: Purchase;
 
