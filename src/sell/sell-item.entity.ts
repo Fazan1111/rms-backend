@@ -14,11 +14,17 @@ import { Sell } from "./sell.entity";
 @Entity()
 export default class SellItem {
     @PrimaryGeneratedColumn()
-    id: string
+    id: number
+
+    @Column()
+    sellId: number
 
     @ManyToOne(() => Sell)
     @JoinColumn()
     sell: Sell
+
+    @Column()
+    productId: number
 
     @ManyToOne(() => Product)
     @JoinColumn()
@@ -26,6 +32,9 @@ export default class SellItem {
 
     @Column()
     qty: number
+
+    @Column({type:'double'})
+    price: number
 
     @Column({type: 'double'})
     amount: number

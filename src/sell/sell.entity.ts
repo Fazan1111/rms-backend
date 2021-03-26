@@ -1,14 +1,16 @@
 import { Customer } from "src/customer/customer.entity";
-import { User } from "src/user/user.entity";
+import { Employee } from "src/employee/employee.entity";
 import { 
     Column, 
     CreateDateColumn, 
     Entity, 
     JoinColumn, 
     ManyToOne, 
+    OneToMany, 
     PrimaryGeneratedColumn, 
     UpdateDateColumn 
 } from "typeorm";
+import SellItem from "./sell-item.entity";
 
 
 @Entity()
@@ -16,13 +18,19 @@ export class Sell {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column()
+    customerId: number
+
+    @Column()
+    employeeId: number
+
     @ManyToOne(() => Customer)
     @JoinColumn()
     customer: Customer
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => Employee)
     @JoinColumn()
-    user: User
+    employee: Employee
 
     @Column()
     sellDate: Date
@@ -34,6 +42,9 @@ export class Sell {
         type: 'double'
     })
     amount: number
+
+    @OneToMany(() => SellItem, saleItem => saleItem.sell)
+    saleItems: SellItem[];
 
     @CreateDateColumn()
     createdAt: Date

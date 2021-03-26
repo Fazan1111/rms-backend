@@ -43,7 +43,7 @@ export class PurchaseController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('/create')
+    @Post('/store')
     async createPurchase(@Body() data: Purchase) {
         return this.service.createPurcase(data);
     }

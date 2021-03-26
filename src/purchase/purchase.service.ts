@@ -28,7 +28,10 @@ export class PurchaseService extends BaseService<Purchase> {
             await queryRunner.manager.save(Purchase, purchase);
 
             if (data.purchaseItems) {
-                data.purchaseItems.forEach(async item => {
+                let itemLen =  data.purchaseItems.length;
+
+                for (let i = 0; i < itemLen; i++) {
+                    let item = data.purchaseItems[i];
                     let purchItem: PurchaseItem = new PurchaseItem();
                     purchItem.purchaseId = purchase.id;
                     purchItem.productId = item.productId;
@@ -42,7 +45,7 @@ export class PurchaseService extends BaseService<Purchase> {
                     queryRunner.manager.update(Product, {id: product.id}, {qty: increasQty});
                     await queryRunner.manager.save(PurchaseItem, purchItem);
                    
-                });
+                };
             }
 
             data.id = purchase.id;
