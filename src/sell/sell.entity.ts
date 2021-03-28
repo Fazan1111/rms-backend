@@ -44,7 +44,7 @@ export class Sell {
     amount: number
 
     @OneToMany(() => SellItem, saleItem => saleItem.sell)
-    saleItems: SellItem[];
+    sellItems: SellItem[];
 
     @CreateDateColumn()
     createdAt: Date

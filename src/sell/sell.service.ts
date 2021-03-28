@@ -43,10 +43,10 @@ export class SellService extends BaseService<Sell> {
             await queryRunner.manager.save(Sell, sale);
 
             //Create Sale Items
-            if (data.saleItems) {
-                let itemLen = data.saleItems.length;
+            if (data.sellItems) {
+                let itemLen = data.sellItems.length;
                 for (let i = 0; i < itemLen; i++) {
-                    let item = data.saleItems[i];
+                    let item = data.sellItems[i];
                     let saleItem: SellItem = new SellItem();
                     saleItem.sellId = sale.id;
                     saleItem.productId = item.productId;

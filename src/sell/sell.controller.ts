@@ -30,7 +30,7 @@ export class SellController {
                 },
                 {
                     entityName: entities[2],
-                    relation: "sellItem",
+                    relation: "sellItems",
                     relationType: "LEFT",
                     subRelation: {
                         name: "product"
@@ -45,6 +45,7 @@ export class SellController {
     @UseGuards(JwtAuthGuard)
     @Post('/store')
     async createSale(@Body() data: Sell) {
+        console.log(data);
         return this.service.createSale(data);
     }
 }
