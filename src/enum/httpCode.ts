@@ -8,5 +8,8 @@ export enum HttpCode {
 
     //Custom code
     OUT_OF_STOCK = 601,
-    NOT_ENOUGH_STOCK = 602
+    NOT_ENOUGH_STOCK = 602,
+    INVOICE_NOT_FOUND = 603,
+    INVOICE_HAS_PAID = 604,
+    INVOICE_OVER_AMOUNT = 605
 }

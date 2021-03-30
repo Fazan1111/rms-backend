@@ -43,6 +43,12 @@ export class Sell {
     })
     amount: number
 
+    @Column({type: 'double'})
+    finalAmount: number
+
+    @Column({type: 'int', default: 0})
+    status: number
+
     @OneToMany(() => SellItem, saleItem => saleItem.sell)
     sellItems: SellItem[];
 
