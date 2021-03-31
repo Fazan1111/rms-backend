@@ -20,41 +20,43 @@ export class BillingService extends BaseService<Billing> {
         await queryRunner.connect();
         await queryRunner.startTransaction();
         let output = '';
+        console.log(data);
         try {
             //Find invoice
             const sale = await queryRunner.manager.findOne(Sell, {id: data.sellId});
-            if (sale) {
-                // Check if invoice already paid
-                if (sale.finalAmount == 0) {
-                    throw new HttpException('Invoice has paid', HttpCode.INVOICE_HAS_PAID);
-                } else if (sale.finalAmount < data.tender) {
-                    throw new HttpException('Error you have paid more than invoice amount', HttpCode.INVOICE_OVER_AMOUNT);
-                }
-
-                let billing: Billing = new Billing();
-                billing.sellId = data.sellId;
-                billing.payDate = data.payDate;
-                billing.payMethodId = data.payMethodId;
-                billing.tender = data.tender;
-                await queryRunner.manager.save(Billing, billing);
-
-                //Update Invoice
-                let modifyAmount = sale.finalAmount - data.tender;
-                if (data.tender < sale.finalAmount) {
-                    queryRunner.manager.update(Sell, {id: sale.id}, {finalAmount: modifyAmount, status: InvoiceStatus.SOME_PAY});
-                } else if (data.tender == sale.finalAmount) {
-                    queryRunner.manager.update(Sell, {id: sale.id}, {finalAmount: modifyAmount, status: InvoiceStatus.PAID});
-                }
-
-                queryRunner.commitTransaction();
-                output = 'Create payment success';
-            } else {
-                throw new HttpException('Invoice not found', HttpCode.INVOICE_NOT_FOUND);
+            if (!sale) {
+                return new HttpException('Invoice not found', HttpCode.INVOICE_NOT_FOUND);
             }
+
+            // Check if invoice already paid
+            if (sale.finalAmount == 0) {
+                return new HttpException('Invoice has paid', HttpCode.INVOICE_HAS_PAID);
+            } else if (sale.finalAmount < data.tender) {
+                return new HttpException('Error you have paid more than due amount', HttpCode.INVOICE_OVER_AMOUNT);
+            }
+
+            let billing: Billing = new Billing();
+            billing.sellId = data.sellId;
+            billing.employeeId = data.employeeId;
+            billing.payDate = data.payDate;
+            billing.payMethodId = data.payMethodId;
+            billing.tender = data.tender;
+            await queryRunner.manager.save(Billing, billing);
+
+            //Update Invoice
+            let modifyAmount = sale.finalAmount - data.tender;
+            if (data.tender < sale.finalAmount) {
+                queryRunner.manager.update(Sell, {id: sale.id}, {finalAmount: modifyAmount, status: InvoiceStatus.SOME_PAY});
+            } else if (data.tender == sale.finalAmount) {
+                queryRunner.manager.update(Sell, {id: sale.id}, {finalAmount: modifyAmount, status: InvoiceStatus.PAID});
+            }
+
+            queryRunner.commitTransaction();
+            output = 'Create payment success';
         } catch (err) {
+            console.log(err);
             output = "Error can not create payment";
             queryRunner.rollbackTransaction();
-            throw new err;
             
         } finally {
             queryRunner.release();

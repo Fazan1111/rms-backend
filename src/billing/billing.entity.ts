@@ -1,3 +1,4 @@
+import { Employee } from "src/employee/employee.entity";
 import { Sell } from "src/sell/sell.entity";
 import { 
     Column,
@@ -21,6 +22,9 @@ export class Billing {
     sellId: number
 
     @Column()
+    employeeId: number
+
+    @Column()
     payMethodId: number
 
     @Column()
@@ -34,8 +38,12 @@ export class Billing {
     sell: Sell
 
     @OneToOne(() => PayMethod)
+    @JoinColumn({name: 'idPayMethod'})
+    payMethod: PayMethod
+
+    @ManyToOne(() => Employee)
     @JoinColumn()
-    payMethod: PayMethod;
+    employee: Employee
 
     @CreateDateColumn()
     createdAt: Date

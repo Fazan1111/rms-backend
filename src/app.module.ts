@@ -12,6 +12,7 @@ import { BillingModule } from './billing/billing.module';
 import { EmployeeModule } from './employee/employee.module';
 import { AuthModule } from './auth/auth.module';
 import { PurchaseModule } from './purchase/purchase.module';
+import { PayMethodModule } from './pay-method/pay-method.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PurchaseModule } from './purchase/purchase.module';
     EmployeeModule,
     AuthModule,
     PurchaseModule,
+    PayMethodModule,
   ],
   controllers: [AppController],
   providers: [AppService],
