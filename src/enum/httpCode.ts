@@ -11,5 +11,8 @@ export enum HttpCode {
     NOT_ENOUGH_STOCK = 602,
     INVOICE_NOT_FOUND = 603,
     INVOICE_HAS_PAID = 604,
-    INVOICE_OVER_AMOUNT = 605
+    INVOICE_OVER_AMOUNT = 605,
+
+    //User
+    INCORRECT_USER = 606
 }

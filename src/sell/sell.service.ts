@@ -61,7 +61,7 @@ export class SellService extends BaseService<Sell> {
                     if (product.qty === 0) {
                         throw new HttpException('Sorry the item your order is out of stock', HttpCode.OUT_OF_STOCK);
                     } else if (product.qty < item.qty) {
-                        throw new HttpException('Sorry the item not enough', HttpCode.NOT_ENOUGH_STOCK);
+                        throw new HttpException('Sorry the item is not enough', HttpCode.NOT_ENOUGH_STOCK);
                     }
                     const decreasQty = product.qty - saleItem.qty;
 

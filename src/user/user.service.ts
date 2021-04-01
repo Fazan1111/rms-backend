@@ -45,17 +45,15 @@ export class UserService {
         return await this.repository.findOne({where: {userName: userName}});
     }
 
-    async findOne(username: string): Promise<Users | undefined> {
-        return this.users.find(user => user.username === username);
+    async findOne(id: number): Promise<Users | undefined> {
+        return this.repository.findOne({where: {id: id}});
     }
 
     async update(id: number, data: User) {
-        const user = await this.repository.findOne({where: {userName: id}});
+        const user = await this.repository.findOne({where: {id: id}});
+        console.log('user', data);
         if (user) {
-            const matchPassword = await bcrypt.compare(data.password, user.password);
-            if (matchPassword) {
-                const password = await bcrypt.hash(data.password, 10);
-                return await getConnection()
+            return await getConnection()
                 .createQueryBuilder()
                 .update(User)
                 .set({
@@ -63,17 +61,42 @@ export class UserService {
                     lastName: data.lastName,
                     userName: data.userName,
                     userType: data.userType,
-                    email: data.email,
-                    password: password     
+                    email: data.email 
                 })
                 .where(`id = :id`, {id: id})
                 .execute();
-            } else {
-                throw new HttpException(`Username or password not correct`, HttpCode.NotFound);
-            }
         } else {
             throw new HttpException(`User no exist`, HttpCode.NotFound);
         }
 
     }
+
+    async changePassword(id: number, data: User) {
+        const user = await this.repository.findOne({where: {id: id}});
+
+        if (user) {
+            const match = await bcrypt.compare(data.password, user.password);
+            if (match) {
+                let newPassword = await bcrypt.hash(data.password, 10);
+                await getConnection().createQueryBuilder()
+                .update(User)
+                .set({password: newPassword})
+                .where(`id = :id`, {id: id}).execute();
+            } else {
+                return new HttpException('Incorrect password please try again', HttpCode.INCORRECT_USER);
+            }
+        } else {
+            return new HttpException('User not found', HttpCode.NotFound);
+        }
+    }
+
+    async delete(ids: any) {
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(User)
+            .where("id IN(:id)", { id: ids })
+            .execute();
+      }
+
 }
