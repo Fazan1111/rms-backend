@@ -1,3 +1,4 @@
+import { Billing } from "src/billing/billing.entity";
 import { Customer } from "src/customer/customer.entity";
 import { Employee } from "src/employee/employee.entity";
 import { 
@@ -51,6 +52,9 @@ export class Sell {
 
     @OneToMany(() => SellItem, saleItem => saleItem.sell)
     sellItems: SellItem[];
+
+    @OneToMany(() => Billing, billing => billing.sell)
+    billing: Billing
 
     @CreateDateColumn()
     createdAt: Date

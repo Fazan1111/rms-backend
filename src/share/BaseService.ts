@@ -11,17 +11,27 @@ export class BaseService<T> {
     public connection: Connection;
 
 
-    async findOne(id: number) {
-        const query = await getRepository(this.entityClass)
-                      .createQueryBuilder(this.entityName)
-                      .where(`${this.entityName}.id = :id`, {id: id})
-                      .getOne();
-
-        if(!query) {
-            throw new HttpException('Sorry data not match', HttpCode.NotFound)
+    async findOne(id: number, relation?: QueryRelation[]) {
+        const query = getRepository(this.entityClass).createQueryBuilder(this.entityName);
+        if (relation) {
+            relation.forEach((relationClass, i) => {
+                if (relationClass.relationType === "INNER") {
+                    query.innerJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
+                } else {
+                    query.leftJoinAndSelect(`${this.entityName}.${relationClass.relation}`, relationClass.entityName);
+                    if (relationClass.subRelation) {
+                        query.leftJoinAndSelect(`${relationClass.entityName}.${relationClass.subRelation["name"]}`, relationClass.subRelation["name"])
+                    }
+                }
+            })
         }
 
-        return query;
+        const result = await query.where(`${this.entityName}.id = :id`, {id: id}).getOne();
+        if(!result) {
+            throw new HttpException('Sorry data not exist', HttpCode.NotFound)
+        }
+
+        return result;
     }
 
     async findMany(relation: QueryRelation[], filter: Filter) {

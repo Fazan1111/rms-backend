@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Sell } from './sell.entity';
 import { SellService } from './sell.service';
@@ -12,8 +12,7 @@ export class SellController {
     async list() {
         const entities:string[] = [
             "customer",
-            "employee",
-            "sellItem"
+            "employee"
         ];
 
         return this.service.findMany(
@@ -27,18 +26,50 @@ export class SellController {
                     entityName: entities[1],
                     relation: "employee",
                     relationType: "INNER"
-                },
-                {
-                    entityName: entities[2],
-                    relation: "sellItems",
-                    relationType: "LEFT",
-                    subRelation: {
-                        name: "product"
-                    }
                 }
             ], 
             null
         );
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/detail/:id')
+    async getDetail(@Param('id') id: number) {
+        const entities: string[] = [
+            "customer",
+            "employee",
+            "sellItem",
+            "billing"
+        ]
+
+        return this.service.findOne(id, [
+            {
+                entityName: entities[0],
+                relation: "customer",
+                relationType: "INNER"
+            },
+            {
+                entityName: entities[1],
+                relation: "employee",
+                relationType: "INNER"
+            },
+            {
+                entityName: entities[2],
+                relation: "sellItems",
+                relationType: "LEFT",
+                subRelation: {
+                    name: "product"
+                }
+            },
+            {
+                entityName: entities[3],
+                relation: "billing",
+                relationType: "LEFT",
+                subRelation: {
+                    name: "payMethod"
+                }
+            }
+        ])
     }
 
 

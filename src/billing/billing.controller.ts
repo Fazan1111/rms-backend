@@ -13,6 +13,7 @@ export class BillingController {
         const entities:string[] = [
             "sell",
             "payMethod",
+            "employee"
         ];
 
 
@@ -24,11 +25,16 @@ export class BillingController {
                     relationType: "LEFT",
                     subRelation: {
                         name: "customer"
-                    }
+                    },
                 },
                 {
                     entityName: entities[1],
                     relation: "payMethod",
+                    relationType: "LEFT"
+                },
+                {
+                    entityName: entities[2],
+                    relation: "employee",
                     relationType: "LEFT"
                 }
             ]

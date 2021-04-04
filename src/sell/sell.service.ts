@@ -1,6 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { HttpCode } from 'src/enum/httpCode';
-import { InvoiceStatus } from 'src/enum/invoiceStatus';
 import { Product } from 'src/product/product.entity';
 import { BaseService } from 'src/share/BaseService';
 import Util from 'src/share/util';

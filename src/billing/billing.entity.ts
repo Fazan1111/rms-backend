@@ -6,6 +6,7 @@ import {
     Entity, 
     JoinColumn, 
     ManyToOne, 
+    OneToMany, 
     OneToOne, 
     PrimaryGeneratedColumn, 
     UpdateDateColumn 
@@ -37,8 +38,8 @@ export class Billing {
     @JoinColumn()
     sell: Sell
 
-    @OneToOne(() => PayMethod)
-    @JoinColumn({name: 'idPayMethod'})
+    @ManyToOne(() => PayMethod)
+    @JoinColumn()
     payMethod: PayMethod
 
     @ManyToOne(() => Employee)
