@@ -1,7 +1,8 @@
 export default interface Filter {
+    id?: number,
     similar?: string;
-    rangeFilter?: string;
-    categoryId: number;
+    rangeFilter?:[Date, Date];
+    categoryId?: number;
 }
 
 export interface RangeFilter {

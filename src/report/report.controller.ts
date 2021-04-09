@@ -1,5 +1,7 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Request, Query, UseGuards, Param, Req } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/decorator/user.decorator';
+import Filter from 'src/share/filter';
 import { ReportService } from './report.service';
 
 @Controller('report/lists')
@@ -10,8 +12,22 @@ export class ReportController {
 
     @UseGuards(JwtAuthGuard)
     @Get('/purchase-items')
-    async getPurchaseItemsReport() {
-        return await this.service.getPurchaseItemsReport();
+    async getPurchaseItemsReport(
+        @Query('productId') productId: number,
+        @Query('start') start: Date,
+        @Query('end') end: Date,
+        @CurrentUser() user
+    ) {
+
+        console.log(user);
+        
+        let filter: Filter = {
+            id: productId,
+            rangeFilter: [start, end]
+        }
+
+
+        return await this.service.getPurchaseItemsReport(filter);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -25,4 +41,5 @@ export class ReportController {
     async getStockReport() {
         return await this.service.getStockReport();
     }
+
 }
