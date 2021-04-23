@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/decorator/user.decorator';
 import { Billing } from './billing.entity';
 import { BillingService } from './billing.service';
 
@@ -45,7 +46,7 @@ export class BillingController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
-    async receivedPayment(@Body() data: Billing) {
-        return await this.service.createPayment(data);
+    async receivedPayment(@Body() data: Billing, @CurrentUser() user: any) {
+        return await this.service.createPayment(data, user.userId);
     }
 }

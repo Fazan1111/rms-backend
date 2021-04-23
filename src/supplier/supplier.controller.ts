@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/decorator/user.decorator';
 import { Supplier } from './supplier.entity';
 import { SupplierService } from './supplier.service';
 
@@ -23,21 +24,25 @@ export class SupplierController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
-    async store(@Body() supplier: Supplier) {
-        return await this.service.insert(supplier);
+    async store(@Body() supplier: Supplier, @CurrentUser() user: any) {
+        return await this.service.insert(supplier, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
-    async update(@Param('id') id: number, @Body() supplier: Supplier) {
-        return await this.service.update(id, supplier);
+    async update(
+        @Param('id') id: number, 
+        @Body() supplier: Supplier,
+        @CurrentUser() user: any
+    ) {
+        return await this.service.update(id, supplier, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('/delete')
-    async destroy(@Req() req) {
+    async destroy(@Req() req, @CurrentUser() user: any) {
         const ids = req.body.ids;
-        return await this.service.delete(ids);
+        return await this.service.delete(ids, user.userId);
     }
 
 }

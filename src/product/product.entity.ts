@@ -35,10 +35,10 @@ export class Product {
     @Column({type: "float", default: 0})
     qty: number
 
-    @Column({type: "double"})
+    @Column({type: "double", nullable: true})
     cost: number
 
-    @Column({type: "double"})
+    @Column({type: "double", nullable: true})
     price: number
 
     @Column({nullable: true})

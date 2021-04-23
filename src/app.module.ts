@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { PurchaseModule } from './purchase/purchase.module';
 import { PayMethodModule } from './pay-method/pay-method.module';
 import { ReportModule } from './report/report.module';
+import { ActivityLogModule } from './activity-log/activity-log.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ReportModule } from './report/report.module';
     PurchaseModule,
     PayMethodModule,
     ReportModule,
+    ActivityLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -14,7 +14,7 @@ export class BillingService extends BaseService<Billing> {
         this.entityName = "billing";
     }
 
-    async createPayment(data: Billing) {
+    async createPayment(data: Billing, userId) {
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.connect();
@@ -51,6 +51,11 @@ export class BillingService extends BaseService<Billing> {
                 queryRunner.manager.update(Sell, {id: sale.id}, {finalAmount: modifyAmount, status: InvoiceStatus.PAID});
             }
 
+            //Log who is create payment
+            let module = this.entityName,
+            method = 'Post';
+
+            await this.activityLogService.addUserActivity(userId, module, method);
             queryRunner.commitTransaction();
             output = 'Create payment success';
         } catch (err) {

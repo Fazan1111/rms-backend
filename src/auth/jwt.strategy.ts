@@ -2,6 +2,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
+import { getManager } from 'typeorm';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -14,6 +16,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, userName: payload.userName };
+    const user = await getManager().createQueryBuilder(User, "user")
+                .where("user.userName = :username", {username: payload.userName})
+                .select("user.id")
+                .addSelect("user.userName")
+                .getOne();
+
+    return { userId: user.id, userName: user.userName };
   }
 }

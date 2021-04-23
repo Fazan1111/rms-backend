@@ -14,7 +14,7 @@ export class PurchaseService extends BaseService<Purchase> {
     }
 
     
-    async createPurcase(data: Purchase): Promise<Purchase> {
+    async createPurcase(data: Purchase, userId: number): Promise<Purchase> {
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.connect();
@@ -42,11 +42,17 @@ export class PurchaseService extends BaseService<Purchase> {
                     const product = await queryRunner.manager.findOne(Product, { id: purchItem.productId });
                     const increasQty = product.qty + purchItem.qty;
 
-                    queryRunner.manager.update(Product, {id: product.id}, {qty: increasQty});
+                    queryRunner.manager.update(Product, {id: product.id}, {qty: increasQty, cost: item.price});
                     await queryRunner.manager.save(PurchaseItem, purchItem);
                    
                 };
             }
+
+            //Log who is create Purchase
+            let module = this.entityName,
+            method = 'Post';
+
+            await this.activityLogService.addUserActivity(userId, module, method);
 
             data.id = purchase.id;
             await queryRunner.commitTransaction();
@@ -55,6 +61,7 @@ export class PurchaseService extends BaseService<Purchase> {
         } finally {
             await queryRunner.release();
         }
+
         return data;
     }
 

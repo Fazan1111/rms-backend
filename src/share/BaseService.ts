@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from "@nestjs/common";
+import { ActivityLogService } from "src/activity-log/activity-log.service";
 import { HttpCode } from "src/enum/httpCode";
 import { Connection, getConnection, getManager, getRepository, ObjectType } from "typeorm";
 import Filter, { QueryRelation } from "./filter";
@@ -9,6 +10,7 @@ export class BaseService<T> {
     protected entityClass: ObjectType<T>
     protected entityName:string = "";
     public connection: Connection;
+    public activityLogService = new ActivityLogService();
 
 
     async findOne(id: number, relation?: QueryRelation[]) {
@@ -64,26 +66,40 @@ export class BaseService<T> {
         return result;
     }
 
-    async insert(data: any) {
+    async insert(data: any, userId:number) {
         await getManager().transaction(async manager => {
-            return await manager.save(this.entityName, data);
+            await manager.save(this.entityName, data);
+            let module = this.entityName,
+                method = 'Post';
+
+            await this.activityLogService.addUserActivity(userId, module, method);
         })
     }
 
-    async update(id: number, data: any) {
+    async update(id: number, data: any, userId:number) {
         await getManager().transaction(async manager => {
             const query = await manager.update(this.entityName, {id: id}, data);
+
+            let module = this.entityName,
+                method = 'Put';
+
+            await this.activityLogService.addUserActivity(userId, module, method);
             return query;
         })
     }
 
-    async delete(ids: any) {
+    async delete(ids: any, userId:number) {
       await getConnection()
           .createQueryBuilder()
           .delete()
           .from(this.entityClass)
           .where("id IN(:id)", { id: ids })
           .execute();
+
+          let module = this.entityName,
+          method = 'Delete';
+
+        await this.activityLogService.addUserActivity(userId, module, method);
     }
 
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PayMethod } from 'src/billing/payMethod.entity';
+import { CurrentUser } from 'src/decorator/user.decorator';
 import { PayMethodService } from './pay-method.service';
 
 @Controller('pay-method')
@@ -15,8 +16,8 @@ export class PayMethodController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
-    async insert(@Body() data: PayMethod) {
-        return this.service.insert(data);
+    async insert(@Body() data: PayMethod, @CurrentUser() user: any) {
+        return this.service.insert(data, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -27,14 +28,18 @@ export class PayMethodController {
 
     @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
-    async update(@Body() data: PayMethod) {
-        return this.service.insert(data);
+    async update(
+        @Param('id') id: number,
+        @Body() data: PayMethod,
+        @CurrentUser() user
+    ) {
+        return this.service.update(id, data, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('/delete')
-    async destroy(@Req() req) {
+    async destroy(@Req() req, @CurrentUser() user: any) {
         const ids = req.body.ids;
-        return await this.service.delete(ids);
+        return await this.service.delete(ids, user.userId);
     }
 }

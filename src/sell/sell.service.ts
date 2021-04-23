@@ -17,7 +17,7 @@ export class SellService extends BaseService<Sell> {
 
     protected util = new Util();
 
-    async createSale(data: Sell): Promise<Sell> {
+    async createSale(data: Sell, userId: number): Promise<Sell> {
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.connect();
@@ -64,11 +64,18 @@ export class SellService extends BaseService<Sell> {
                     }
                     const decreasQty = product.qty - saleItem.qty;
 
-                    queryRunner.manager.update(Product, {id: product.id}, {qty: decreasQty});
+                    queryRunner.manager.update(Product, {id: product.id}, {qty: decreasQty, price: item.price});
                     await queryRunner.manager.save(SellItem, saleItem);
                 };
                 
             }
+
+            
+            //Log who is create sale
+            let module = this.entityName,
+            method = 'Post';
+            await this.activityLogService.addUserActivity(userId, module, method);
+
             data.id = sale.id;
             queryRunner.commitTransaction();
         } catch (err) {

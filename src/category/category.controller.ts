@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from 
 import { CategoryService } from './category.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Category } from './category.entity';
+import { CurrentUser } from 'src/decorator/user.decorator';
 
 @Controller('/category')
 export class CategoryController {
@@ -18,8 +19,8 @@ export class CategoryController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
-    async store(@Body() data: Category) {
-        return await this.service.insert(data);
+    async store(@Body() data: Category, @CurrentUser() user: any) {
+        return await this.service.insert(data, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -30,15 +31,19 @@ export class CategoryController {
 
     @UseGuards(JwtAuthGuard)
     @Put('/update/:id')
-    async update(@Param('id') id: number, @Body() customer: Category) {
-        return await this.service.update(id, customer);
+    async update(
+        @Param('id') id: number, 
+        @Body() customer: Category,
+        @CurrentUser() user: any
+        ) {
+        return await this.service.update(id, customer, user.userId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete('/delete')
-    async destroy(@Req() req) {
+    async destroy(@Req() req, @CurrentUser() user: any) {
         const ids = req.body.ids;
-        return await this.service.delete(ids);
+        return await this.service.delete(ids, user.userId);
     }
 
 }

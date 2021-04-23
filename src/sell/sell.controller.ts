@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/decorator/user.decorator';
 import { Sell } from './sell.entity';
 import { SellService } from './sell.service';
 
@@ -75,8 +76,8 @@ export class SellController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/store')
-    async createSale(@Body() data: Sell) {
+    async createSale(@Body() data: Sell, @CurrentUser() user: any) {
         console.log(data);
-        return this.service.createSale(data);
+        return this.service.createSale(data, user.userId);
     }
 }
